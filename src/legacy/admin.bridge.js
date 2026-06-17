@@ -1,0 +1,28 @@
+import { v11SyncCustomSubjectsFromDb, v11AdminSubjectsPage, v11AdminSubjectCard, v11AdminShowCreateSubjectForm, v11AdminSubjectDotMenu, v11AdminCreateSubject, v11AdminEditSubject, v11AdminSaveEditSubject, v11AdminDeleteSubject, v11AdminOpenSubject, v11AdminUnitsPage, v11AdminAddUnit, v11AdminEditUnit, v11AdminDeleteUnit, v11AdminUnitDetail, v11SwitchTab, v11AdminAddTopic, v11AdminDeleteTopic, v11AdminUploadVideo, v11AdminDeleteVideo, v11AdminUploadNote, v11AdminDeleteNote, v11AdminUploadPYQ, v11AdminDeletePYQ, v11AdminUploadIQ, v11AdminDeleteIQ } from '../modules/admin/index.js';
+
+window.v11SyncCustomSubjectsFromDb = v11SyncCustomSubjectsFromDb;
+window.v11AdminSubjectsPage = v11AdminSubjectsPage;
+window.v11AdminSubjectCard = v11AdminSubjectCard;
+window.v11AdminShowCreateSubjectForm = v11AdminShowCreateSubjectForm;
+window.v11AdminSubjectDotMenu = v11AdminSubjectDotMenu;
+window.v11AdminCreateSubject = v11AdminCreateSubject;
+window.v11AdminEditSubject = v11AdminEditSubject;
+window.v11AdminSaveEditSubject = v11AdminSaveEditSubject;
+window.v11AdminDeleteSubject = v11AdminDeleteSubject;
+window.v11AdminOpenSubject = v11AdminOpenSubject;
+window.v11AdminUnitsPage = v11AdminUnitsPage;
+window.v11AdminAddUnit = v11AdminAddUnit;
+window.v11AdminEditUnit = v11AdminEditUnit;
+window.v11AdminDeleteUnit = v11AdminDeleteUnit;
+window.v11AdminUnitDetail = v11AdminUnitDetail;
+window.v11SwitchTab = v11SwitchTab;
+window.v11AdminAddTopic = v11AdminAddTopic;
+window.v11AdminDeleteTopic = v11AdminDeleteTopic;
+window.v11AdminUploadVideo = v11AdminUploadVideo;
+window.v11AdminDeleteVideo = v11AdminDeleteVideo;
+window.v11AdminUploadNote = v11AdminUploadNote;
+window.v11AdminDeleteNote = v11AdminDeleteNote;
+window.v11AdminUploadPYQ = v11AdminUploadPYQ;
+window.v11AdminDeletePYQ = v11AdminDeletePYQ;
+window.v11AdminUploadIQ = v11AdminUploadIQ;
+window.v11AdminDeleteIQ = v11AdminDeleteIQ;
