@@ -14,7 +14,7 @@ const PORTAL_ROLE = {
 const profileRequestCache = new Map();
 const LOGIN_PORTAL_KEY = 'aimeasy_login_portal';
 const LOGIN_PORTAL_BACKUP_KEY = 'aimeasy_login_portal_backup';
-const ROLE_PROFILE_TABLE = 'role_profiles';
+const ROLE_PROFILE_TABLE = 'profiles';
 const LEGACY_PROFILE_TABLE = 'profiles';
 
 function profileCacheKey(authUserId, role = '') {

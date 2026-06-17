@@ -39,6 +39,5 @@ async function check() {
   await checkTable('topics');
   await checkTable('topic_videos');
   await checkTable('profiles');
-  await checkTable('role_profiles');
 }
 check();

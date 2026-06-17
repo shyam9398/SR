@@ -564,7 +564,7 @@ window.v10Esc = window.v10Esc || function(str) {
       iqCount
     ] = await Promise.all([
       countTable('profiles'),
-      countTable('role_profiles'),
+      countTable('profiles'),
       countTable('subjects'),
       countTable('branches'),
       distinctSubjectCount('branch'),

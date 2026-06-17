@@ -1015,7 +1015,7 @@ if (!/^[0-9]{10}$/.test(phone)) {
     ?.on('postgres_changes', { event: '*', schema: 'public', table: 'topic_videos' }, () => notifyCurriculumChanged({ type: 'video' }))
     ?.on('postgres_changes', { event: '*', schema: 'public', table: 'content_items' }, () => notifyCurriculumChanged({ type: 'content' }))
     ?.on('postgres_changes', { event: '*', schema: 'public', table: 'live_workshop_registrations' }, () => window.updateLandingStats?.())
-    ?.on('postgres_changes', { event: '*', schema: 'public', table: 'role_profiles' }, () => {
+    ?.on('postgres_changes', { event: '*', schema: 'public', table: 'profiles' }, () => {
       notifyCurriculumChanged({ type: 'role_profile' });
     })
     ?.subscribe?.();

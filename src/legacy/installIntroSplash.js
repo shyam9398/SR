@@ -293,9 +293,34 @@ export function installIntroSplash() {
     }
   }
 
-  if (document.readyState === 'complete' || document.readyState === 'interactive') {
-    window.setTimeout(initIntro, 0);
-  } else {
-    window.addEventListener('DOMContentLoaded', () => window.setTimeout(initIntro, 0));
+  function tryInit() {
+    const video = document.getElementById('intro-video');
+    if (video) {
+      initIntro();
+      return true;
+    }
+    return false;
+  }
+
+  if (!tryInit()) {
+    const observer = new MutationObserver((mutations, obs) => {
+      if (tryInit()) {
+        obs.disconnect();
+      }
+    });
+    observer.observe(document.body || document.documentElement, {
+      childList: true,
+      subtree: true
+    });
+    // Fallback: if we still can't find it after 3 seconds, hide the loading overlay
+    window.setTimeout(() => {
+      observer.disconnect();
+      const loadingOverlay = document.getElementById('loading-overlay');
+      if (loadingOverlay) {
+        console.warn('[INTRO] Fallback triggered: intro element not found, hiding loading overlay.');
+        loadingOverlay.style.display = 'none';
+        loadingOverlay.classList.add('hidden');
+      }
+    }, 3000);
   }
 }

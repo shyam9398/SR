@@ -99,13 +99,6 @@ async function safeDistinctCount(table, column) {
 }
 
 async function safeWorkshopParticipantCount() {
-  if (!supabase) return 0;
-  try {
-    const { data, error } = await supabase.rpc('get_live_workshop_participant_count');
-    if (!error) return Number(data || 0);
-  } catch (error) {
-    console.warn('adminStats workshop participant rpc failed:', error?.message || error);
-  }
   return safeCount('live_workshop_registrations');
 }
 
@@ -135,10 +128,10 @@ export async function fetchAdminDashboardStats() {
   ] = await Promise.all([
     fetchDashboardCountsRpc(),
     safeCount('profiles'),
-    safeCount('role_profiles'),
-    safeCount('role_profiles', (query) => query.eq('role', 'student')),
-    safeCount('role_profiles', (query) => query.in('role', ['content_creator', 'creator', 'teacher', 'subadmin', 'sub_admin'])),
-    safeCount('role_profiles', (query) => query.in('role', ['subadmin', 'sub_admin'])),
+    safeCount('profiles'),
+    safeCount('profiles', (query) => query.eq('role', 'student')),
+    safeCount('profiles', (query) => query.in('role', ['content_creator', 'creator', 'teacher', 'subadmin', 'sub_admin'])),
+    safeCount('profiles', (query) => query.in('role', ['subadmin', 'sub_admin'])),
     safeCount('subjects'),
     safeCount('branches'),
     safeDistinctCount('subjects', 'branch'),

@@ -1,4 +1,4 @@
-window.v10Esc = window.v10Esc || function(str) {
+window.v10Esc = window.v10Esc || function (str) {
   return String(str || '')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -326,8 +326,14 @@ window.v10Esc = window.v10Esc || function(str) {
     showToast('Feature deleted', 'red');
   };
 
-  v10ContentPanel = function (subject, unit, role) {
-    return dynamicContentPanel(subject, unit, role === 'content_creator' ? 'content_creator' : 'subadmin');
+  window.v10ContentPanel = function (subject, unit, role) {
+    return dynamicContentPanel(
+      subject,
+      unit,
+      role === 'content_creator'
+        ? 'content_creator'
+        : 'subadmin'
+    );
   };
 
   v10SAUnitsPage = async function (subj) {
@@ -1640,12 +1646,12 @@ async function renderCRDashboard() {
   if (!content) return;
   const sa = APP.subAdminData || {};
   const username = sa.username || 'Creator';
-  
+
   const custom = JSON.parse(localStorage.getItem('edusync_custom_subjects') || '[]');
   const adminVideos = JSON.parse(localStorage.getItem('edusync_admin_videos') || '[]');
   const adminNotes = JSON.parse(localStorage.getItem('edusync_admin_notes') || '[]');
   const adminPYQs = JSON.parse(localStorage.getItem('edusync_admin_pyqs') || '[]');
-  
+
   const myVideos = adminVideos.filter(v => sa.username && v.uploadedBy === sa.username);
   const myNotes = adminNotes.filter(n => sa.username && n.uploadedBy === sa.username);
   const myPYQs = adminPYQs.filter(p => sa.username && p.uploadedBy === sa.username);
@@ -1710,7 +1716,7 @@ async function renderCRDashboard() {
       const vCount = videosRes.count || 0;
       const nCount = notesRes.count || 0;
       const pCount = pyqsRes.count || 0;
-      
+
       const activeCrTab = document.querySelector('.admin-nav-item.active')?.id?.replace('cr-nav-', '');
       if (!activeCrTab || activeCrTab === 'dashboard') {
         content.innerHTML = renderHTML(sCount, vCount, nCount, pCount);
@@ -2065,6 +2071,18 @@ function crDeleteContent(type, id, subjId, unitId) {
   renderCRAddContent();
 }
 
+// Bind creator functions to window
+window.toggleCRSidebar = toggleCRSidebar;
+window.closeCRSidebar = closeCRSidebar;
+window.switchCRSection = switchCRSection;
+window.launchCreatorScreen = launchCreatorScreen;
+window.creatorLogout = creatorLogout;
+window.renderCRDashboard = renderCRDashboard;
+window.renderCRChoosing = renderCRChoosing;
+window.crChooseSubject = crChooseSubject;
+window.renderCRAddContent = renderCRAddContent;
+
+
 // ═══════════════════════════════════════════════════════════════
 //  PATCH: Teacher role → launches Creator Portal instead
 // ═══════════════════════════════════════════════════════════════
@@ -2184,7 +2202,7 @@ window.v11AdminCreateSubject = async function () {
   const name = document.getElementById('v11-adm-subname')?.value.trim();
   const code = document.getElementById('v11-adm-subcode')?.value.trim();
   if (!branch || !sem || !reg || !uni || !name) { showToast('Fill all required fields', 'red'); return; }
-  
+
   if (window.aimeasyCreateSubject) {
     const { error } = await window.aimeasyCreateSubject({
       branch,
@@ -2270,7 +2288,7 @@ window.v10MergeUnitContentRows = function (subjectName, unitId, notesRows = [], 
   const branch = typeof v10BranchForSubject === 'function' ? v10BranchForSubject(subjectName) : '';
   function mergeByDbId(key, rows, mapRow) {
     const all = JSON.parse(localStorage.getItem(key) || '[]').filter(item => (
-      item.subject !== subjectName || String(item.unit) !== String(unitId) || !item.dbContentId || 
+      item.subject !== subjectName || String(item.unit) !== String(unitId) || !item.dbContentId ||
       (typeof v10SameBranchContent === 'function' && !v10SameBranchContent(item, branch))
     ));
     const mapped = (rows || []).map(mapRow);
@@ -2365,7 +2383,7 @@ window.v10SAUnitDetail = async function (subjId, unitId) {
   if (saContent) saContent.innerHTML = "<div style=\"padding:2rem;text-align:center;\"><div class=\"loading-spinner\" style=\"margin: 3rem auto 1rem;\"></div><p style=\"color:var(--text3);\">Opening Unit...</p></div>";
   const subj = window._v10SASubj || findSubjectById(subjId);
   if (!subj) return;
-  
+
   let unit = { id: unitId, title: `Unit ${unitId}`, topics: [] };
   let dbUnits = [];
 
@@ -2406,7 +2424,7 @@ window.v11AdminUnitDetail = async function (subjId, unitId) {
   window._v11AdminUnitId = unitId;
   const subj = window._v11AdminSubj;
   if (!subj) return;
-  
+
   let unit = { id: unitId, name: `Unit ${unitId}`, topics: [] };
   const units = v11GetUnits(subjId, false, subj);
   const found = units.find(u => u.id === unitId);
@@ -2431,7 +2449,7 @@ window.v11AdminUnitDetail = async function (subjId, unitId) {
 
   const content = document.getElementById('admin-content');
   if (!content) return;
-  
+
   content.innerHTML = `
   <div style="padding:2rem;max-width:1100px;margin:0 auto;width:100%;">
     <button class="v11-back" onclick="v11AdminUnitsPage(window._v11AdminSubj)">← Back to Units</button>
@@ -2621,7 +2639,7 @@ window.v10OpenTopicMenuDb = function (btn, subjId, unitId, topicId, idx, total) 
   v11CloseAllPopups();
   const popup = document.createElement('div');
   popup.className = 'adm-popup';
-  
+
   let reorderHtml = '';
   if (idx > 0) {
     reorderHtml += `<button class="adm-popup-item" onclick="this.closest('.adm-popup').remove(); window.v10MoveRoadmapTopicDb('${subjId}','${unitId}','${topicId}','up')">▲ Move Up</button>`;
@@ -2641,7 +2659,7 @@ window.v10OpenTopicMenuDb = function (btn, subjId, unitId, topicId, idx, total) 
 
 window.v10OpenRoadmapEditModalDb = function (subjId, unitId, topicId) {
   v11CloseAllPopups();
-  const esc = window.v10Esc || ((s)=>String(s||''));
+  const esc = window.v10Esc || ((s) => String(s || ''));
   const topics = JSON.parse(localStorage.getItem('edusync_units_' + subjId) || '[]')
     .find(u => String(u.id) === String(unitId))?.topics || [];
   const topic = topics.find(t => String(t.id) === String(topicId));
@@ -2792,24 +2810,24 @@ window.v10MoveRoadmapTopicDb = async function (subjId, unitId, topicId, directio
 };
 
 window.v10SavedRoadmapTree = function (topics, subjId, unitId) {
-  const esc = window.v10Esc || ((s)=>String(s||''));
+  const esc = window.v10Esc || ((s) => String(s || ''));
   const list = Array.isArray(topics) ? topics : [];
   if (!list.length) return '<div class="v10-saved-roadmap-empty" style="text-align:center;padding:2rem;color:var(--text3);">Saved roadmap will appear here as a flow diagram.</div>';
-  
+
   return `
   <div class="v10-saved-roadmap">
     <div class="v10-items-head" style="margin-bottom:12px;font-weight:700;">Saved Roadmap Flow (${list.length})</div>
     <div class="roadmap-flow-container" style="display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px; background:var(--surface2); border-radius:var(--radius-lg); border:1.5px solid var(--border);">
       ${list.map((topic, ti) => {
-        const topicName = topic.name || topic.topicName || `Topic ${ti + 1}`;
-        const videos = Array.isArray(topic.videos) && topic.videos.length
-          ? topic.videos
-          : (topic.youtubeUrls || topic.urls || []).map((url) => ({ url, description: '' }));
-        const video = videos[0] || { url: '', description: '' };
-        const videoUrl = video.url || topic.youtubeUrl || topic.url || '';
-        const videoDesc = video.description || topic.description || '';
+    const topicName = topic.name || topic.topicName || `Topic ${ti + 1}`;
+    const videos = Array.isArray(topic.videos) && topic.videos.length
+      ? topic.videos
+      : (topic.youtubeUrls || topic.urls || []).map((url) => ({ url, description: '' }));
+    const video = videos[0] || { url: '', description: '' };
+    const videoUrl = video.url || topic.youtubeUrl || topic.url || '';
+    const videoDesc = video.description || topic.description || '';
 
-        const arrowHtml = ti > 0 ? `
+    const arrowHtml = ti > 0 ? `
           <div class="roadmap-connector" style="display:flex; align-items:center; justify-content:center; height:32px; width:100%;">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <line x1="12" y1="5" x2="12" y2="19"></line>
@@ -2818,7 +2836,7 @@ window.v10SavedRoadmapTree = function (topics, subjId, unitId) {
           </div>
         ` : '';
 
-        return arrowHtml + `
+    return arrowHtml + `
           <div class="v10-saved-topic roadmap-node" data-topic-id="${topic.id}" style="position:relative; width:100%; max-width:400px; padding:18px; background:var(--surface); border:2px solid var(--primary); border-radius:var(--radius-md); box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:8px;">
             <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
               <h4 style="margin:0; font-size:0.95rem; color:var(--primary); font-weight:700;">${esc(topicName)}</h4>
@@ -2832,7 +2850,7 @@ window.v10SavedRoadmapTree = function (topics, subjId, unitId) {
             ` : ''}
           </div>
         `;
-      }).join('')}
+  }).join('')}
     </div>
   </div>
   `;
@@ -3290,14 +3308,14 @@ window.v10UploadNote = async function (subjectName, unitId) {
     topicName = topicInfo.topicName;
     if (!topicName) { showToast('Enter topic text or select a topic', 'red'); return; }
     branch = v10BranchForSubject(subjectName);
-    
+
     saved = await window.aimeasySaveLinkedContentItem?.({ subject: v10SubjectForDb(subjectName), unit: v10UnitForDb(unitId), topicTitle: topicName, topicLegacyId: topicId, contentType: 'note', title: topicName, body: description, url: link, metadata: { topicId, topicText: topicName, branch } });
     if (saved?.error) { showToast('DB save failed: ' + saved.error.message, 'red'); return; }
   } finally {
     window._isSavingContent = false;
     if (_btn) { _btn.disabled = false; _btn.textContent = _btn.dataset.original; }
   }
-  
+
   const notes = JSON.parse(localStorage.getItem('edusync_admin_notes') || '[]');
   const dbId = saved?.data?.id || Date.now();
   const note = { id: dbId, dbContentId: dbId, title: topicName, description, type: 'link', link, subject: subjectName, branch, unit: unitId, topicId, topicName, uploadedAt: new Date().toLocaleDateString() };
@@ -3314,25 +3332,25 @@ window.v10UploadPYQ = async function (subjectName, unitId) {
   const _btn = event?.target;
   if (_btn) { _btn.disabled = true; _btn.dataset.original = _btn.textContent; _btn.textContent = 'Saving...'; }
   try {
-  const question = document.getElementById('v10-pyqtxt-' + unitId)?.value.trim();
-  const year = document.getElementById('v10-pyqyr-' + unitId)?.value;
-  const marks = document.getElementById('v10-pyqmarks-' + unitId)?.value;
-  const { topicId, topicName } = v10ReadTopicInput(unitId, 'pyq');
-  if (!topicName) { showToast('Enter topic text or select a topic', 'red'); return; }
-  if (!question) { showToast('Enter question', 'red'); return; }
-  const pyqs = JSON.parse(localStorage.getItem('edusync_admin_pyqs') || '[]');
-  const branch = v10BranchForSubject(subjectName);
-  
-  const saved = await window.aimeasySaveLinkedContentItem?.({ subject: v10SubjectForDb(subjectName), unit: v10UnitForDb(unitId), topicTitle: topicName, topicLegacyId: topicId, contentType: 'pyq', title: question.slice(0, 80), body: question, metadata: { year, marks, topicId, topicText: topicName, branch } });
-  if (saved?.error) { showToast('DB save failed: ' + saved.error.message, 'red'); return; }
-  
-  const dbId = saved.data?.id || Date.now();
-  const pyq = { id: dbId, dbContentId: dbId, question, year, marks, subject: subjectName, branch, unit: unitId, topicId, topicName };
-  pyqs.push(pyq);
-  localStorage.setItem('edusync_admin_pyqs', JSON.stringify(pyqs));
-  await v10RefreshContentPane('pyq', subjectName, unitId);
-  window.renderSubAdminDashboardLive?.();
-  showToast('PYQ saved under topic.', 'green');
+    const question = document.getElementById('v10-pyqtxt-' + unitId)?.value.trim();
+    const year = document.getElementById('v10-pyqyr-' + unitId)?.value;
+    const marks = document.getElementById('v10-pyqmarks-' + unitId)?.value;
+    const { topicId, topicName } = v10ReadTopicInput(unitId, 'pyq');
+    if (!topicName) { showToast('Enter topic text or select a topic', 'red'); return; }
+    if (!question) { showToast('Enter question', 'red'); return; }
+    const pyqs = JSON.parse(localStorage.getItem('edusync_admin_pyqs') || '[]');
+    const branch = v10BranchForSubject(subjectName);
+
+    const saved = await window.aimeasySaveLinkedContentItem?.({ subject: v10SubjectForDb(subjectName), unit: v10UnitForDb(unitId), topicTitle: topicName, topicLegacyId: topicId, contentType: 'pyq', title: question.slice(0, 80), body: question, metadata: { year, marks, topicId, topicText: topicName, branch } });
+    if (saved?.error) { showToast('DB save failed: ' + saved.error.message, 'red'); return; }
+
+    const dbId = saved.data?.id || Date.now();
+    const pyq = { id: dbId, dbContentId: dbId, question, year, marks, subject: subjectName, branch, unit: unitId, topicId, topicName };
+    pyqs.push(pyq);
+    localStorage.setItem('edusync_admin_pyqs', JSON.stringify(pyqs));
+    await v10RefreshContentPane('pyq', subjectName, unitId);
+    window.renderSubAdminDashboardLive?.();
+    showToast('PYQ saved under topic.', 'green');
   } finally {
     window._isSavingContentPYQ = false;
     if (_btn) { _btn.disabled = false; _btn.textContent = _btn.dataset.original; }
@@ -3345,24 +3363,24 @@ window.v10UploadIQ = async function (subjectName, unitId) {
   const _btn = event?.target;
   if (_btn) { _btn.disabled = true; _btn.dataset.original = _btn.textContent; _btn.textContent = 'Saving...'; }
   try {
-  const question = document.getElementById('v10-iqtxt-' + unitId)?.value.trim();
-  const priority = document.getElementById('v10-iqprio-' + unitId)?.value;
-  const { topicId, topicName } = v10ReadTopicInput(unitId, 'iq');
-  if (!topicName) { showToast('Enter topic text or select a topic', 'red'); return; }
-  if (!question) { showToast('Enter question', 'red'); return; }
-  const iqs = JSON.parse(localStorage.getItem('edusync_admin_iqs') || '[]');
-  const branch = v10BranchForSubject(subjectName);
-  
-  const saved = await window.aimeasySaveLinkedContentItem?.({ subject: v10SubjectForDb(subjectName), unit: v10UnitForDb(unitId), topicTitle: topicName, topicLegacyId: topicId, contentType: 'iq', title: question.slice(0, 80), body: question, metadata: { priority, topicId, topicText: topicName, branch } });
-  if (saved?.error) { showToast('DB save failed: ' + saved.error.message, 'red'); return; }
-  
-  const dbId = saved.data?.id || Date.now();
-  const iq = { id: dbId, dbContentId: dbId, question, priority, subject: subjectName, branch, unit: unitId, topicId, topicName, uploadedAt: new Date().toLocaleString() };
-  iqs.push(iq);
-  localStorage.setItem('edusync_admin_iqs', JSON.stringify(iqs));
-  await v10RefreshContentPane('iq', subjectName, unitId);
-  window.renderSubAdminDashboardLive?.();
-  showToast('Important question saved under topic.', 'green');
+    const question = document.getElementById('v10-iqtxt-' + unitId)?.value.trim();
+    const priority = document.getElementById('v10-iqprio-' + unitId)?.value;
+    const { topicId, topicName } = v10ReadTopicInput(unitId, 'iq');
+    if (!topicName) { showToast('Enter topic text or select a topic', 'red'); return; }
+    if (!question) { showToast('Enter question', 'red'); return; }
+    const iqs = JSON.parse(localStorage.getItem('edusync_admin_iqs') || '[]');
+    const branch = v10BranchForSubject(subjectName);
+
+    const saved = await window.aimeasySaveLinkedContentItem?.({ subject: v10SubjectForDb(subjectName), unit: v10UnitForDb(unitId), topicTitle: topicName, topicLegacyId: topicId, contentType: 'iq', title: question.slice(0, 80), body: question, metadata: { priority, topicId, topicText: topicName, branch } });
+    if (saved?.error) { showToast('DB save failed: ' + saved.error.message, 'red'); return; }
+
+    const dbId = saved.data?.id || Date.now();
+    const iq = { id: dbId, dbContentId: dbId, question, priority, subject: subjectName, branch, unit: unitId, topicId, topicName, uploadedAt: new Date().toLocaleString() };
+    iqs.push(iq);
+    localStorage.setItem('edusync_admin_iqs', JSON.stringify(iqs));
+    await v10RefreshContentPane('iq', subjectName, unitId);
+    window.renderSubAdminDashboardLive?.();
+    showToast('Important question saved under topic.', 'green');
   } finally {
     window._isSavingContentIQ = false;
     if (_btn) { _btn.disabled = false; _btn.textContent = _btn.dataset.original; }
@@ -3374,13 +3392,13 @@ window.v10DeleteNote = async function (id, subjectName, unitId) {
   const _btn = window.event?.target;
   if (_btn) { _btn.disabled = true; _btn.textContent = '...'; }
   if (!confirm('Delete this note?')) return;
-  const dbId = String(id).startsWith('temp_') ? null : id; 
+  const dbId = String(id).startsWith('temp_') ? null : id;
   if (dbId) {
     await window.aimeasyDeleteContent?.(dbId);
   }
   const notes = JSON.parse(localStorage.getItem('edusync_admin_notes') || '[]');
   localStorage.setItem('edusync_admin_notes', JSON.stringify(notes.filter(n => String(n.id) !== String(id) && String(n.dbContentId) !== String(id))));
-  
+
   await v10RefreshContentPane('notes', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
   showToast('Note deleted', 'red');
@@ -3397,7 +3415,7 @@ window.v10DeletePYQ = async function (id, subjectName, unitId) {
   }
   const pyqs = JSON.parse(localStorage.getItem('edusync_admin_pyqs') || '[]');
   localStorage.setItem('edusync_admin_pyqs', JSON.stringify(pyqs.filter(p => String(p.id) !== String(id) && String(p.dbContentId) !== String(id))));
-  
+
   await v10RefreshContentPane('pyq', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
   showToast('PYQ deleted', 'red');
@@ -3414,7 +3432,7 @@ window.v10DeleteIQ = async function (id, subjectName, unitId) {
   }
   const iqs = JSON.parse(localStorage.getItem('edusync_admin_iqs') || '[]');
   localStorage.setItem('edusync_admin_iqs', JSON.stringify(iqs.filter(q => String(q.id) !== String(id) && String(q.dbContentId) !== String(id))));
-  
+
   await v10RefreshContentPane('iq', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
   showToast('Question deleted', 'red');
@@ -3435,7 +3453,7 @@ window.aimeasyEditNote = async function (id, subjectName, unitId) {
   }
   const newLink = prompt('Edit Note Link / URL:', note.link || '');
   if (newLink === null) return;
-  
+
   note.title = newTitle.trim();
   note.link = newLink.trim();
   const dbId = note.dbContentId || (String(note.id).startsWith('temp_') ? null : note.id);
@@ -3447,7 +3465,7 @@ window.aimeasyEditNote = async function (id, subjectName, unitId) {
   }
   localStorage.setItem('edusync_admin_notes', JSON.stringify(notes));
   showToast('Note updated successfully', 'green');
-  
+
   await v10RefreshContentPane('notes', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
 };
@@ -3489,10 +3507,10 @@ window.aimeasyEditPYQ = async function (id, subjectName, unitId) {
       },
     });
   }
-  
+
   localStorage.setItem('edusync_admin_pyqs', JSON.stringify(pyqs));
   showToast('PYQ updated successfully', 'green');
-  
+
   await v10RefreshContentPane('pyq', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
 };
@@ -3530,10 +3548,10 @@ window.aimeasyEditIQ = async function (id, subjectName, unitId) {
       },
     });
   }
-  
+
   localStorage.setItem('edusync_admin_iqs', JSON.stringify(iqs));
   showToast('Question updated successfully', 'green');
-  
+
   await v10RefreshContentPane('iq', subjectName, unitId);
   window.renderSubAdminDashboardLive?.();
 };
@@ -3561,7 +3579,7 @@ window.aimeasyEditIQ = async function (id, subjectName, unitId) {
     });
     if (saved?.error) { showToast('Save failed: ' + saved.error.message, 'red'); return; }
     showToast('✅ Video uploaded! Instantly live for students.', 'green');
-    
+
     // Clear inputs
     const elTitle = document.getElementById('crac-vtitle') || document.getElementById('v11cr-vtitle');
     const elUrl = document.getElementById('crac-vurl') || document.getElementById('v11cr-vurl');
@@ -3591,7 +3609,7 @@ window.aimeasyEditIQ = async function (id, subjectName, unitId) {
     });
     if (saved?.error) { showToast('Save failed: ' + saved.error.message, 'red'); return; }
     showToast('✅ Notes uploaded! Instantly live.', 'green');
-    
+
     // Clear inputs
     const elTitle = document.getElementById('crac-ntitle') || document.getElementById('v11cr-ntitle');
     const elLink = document.getElementById('crac-nlink') || document.getElementById('v11cr-nlink');
@@ -3671,7 +3689,7 @@ window.aimeasyEditIQ = async function (id, subjectName, unitId) {
         if (error) { showToast('Delete failed: ' + error.message, 'red'); return; }
       }
     }
-    
+
     // Clean up localstorage
     const keyMap = { videos: 'edusync_admin_videos', notes: 'edusync_admin_notes', pyqs: 'edusync_admin_pyqs', iqs: 'edusync_admin_iqs' };
     const key = keyMap[type];
@@ -3679,7 +3697,7 @@ window.aimeasyEditIQ = async function (id, subjectName, unitId) {
       const arr = JSON.parse(localStorage.getItem(key) || '[]');
       localStorage.setItem(key, JSON.stringify(arr.filter(x => String(x.id) !== String(id) && String(x.dbContentId) !== String(id))));
     }
-    
+
     showToast('Deleted', 'red');
     window._crSelectedUnit = unitId;
     const subj = window._crSelectedSubj;
